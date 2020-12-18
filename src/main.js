@@ -10,6 +10,13 @@ import './assets/css/global.css'
 import axios from 'axios'
 // 配置请求的根路径
 axios.defaults.baseURL = 'https://www.liulongbin.top:8888/api/private/v1/'
+// axios 拦截器，作用是在每次请求时修改 请求信息，包括请求头，等信息
+axios.interceptors.request.use(config => {
+  console.log(config)
+  // 在请求头添加 Authorization
+  config.headers.Authorization = window.sessionStorage.getItem('token')
+  return config
+})
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
