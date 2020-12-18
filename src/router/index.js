@@ -15,4 +15,16 @@ const router = new VueRouter({
   ]
 })
 
+// 挂载路由导航守卫，在页面请求时，率先进行的处理函数
+// 常用来控制权限
+router.beforeEach((to, from, next) => {
+  // to 表示将要访问的路径
+  // from 表示从哪个路径而来
+  // next 是一个函数， next()放行  next('/login')指定页面
+  if (to.path === '/login') return next()
+  const tokenStr = window.sessionStorage.getItem('token')
+  if (!tokenStr) return next('/login')
+  next()
+})
+
 export default router

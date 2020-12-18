@@ -3,38 +3,41 @@
     <div class="login_box">
       <!-- 头像区域 -->
       <div class="avatar_box">
-        <img src="../assets/logo.png"
-             alt="">
+        <img src="../assets/logo.png" alt="" />
       </div>
       <!-- 登录表单区域 -->
       <!-- model 数据双向绑定 -->
       <!-- rules 数据规则校验 -->
       <!-- ref 定义form对象，使得在 js 中可以获取到当前form对象 -->
-      <el-form :model="loginForm"
-               :rules="loginFormRules"
-               ref="loginFormRef"
-               label-width="0px"
-               class="login_form">
+      <el-form
+        :model="loginForm"
+        :rules="loginFormRules"
+        ref="loginFormRef"
+        label-width="0px"
+        class="login_form"
+      >
         <!-- 用户名 -->
         <!-- prop 设置输入框对应的属性，用于 rules 规则校验 -->
         <el-form-item prop="username">
           <!-- v-model 实现数据的双向绑定 -->
-          <el-input v-model="loginForm.username"
-                    prefix-icon="el-icon-user-solid"></el-input>
+          <el-input
+            v-model="loginForm.username"
+            prefix-icon="el-icon-user-solid"
+          ></el-input>
         </el-form-item>
         <!-- 密码 -->
         <el-form-item prop="password">
           <!-- type 设置input输出框的数据类型 -->
-          <el-input v-model="loginForm.password"
-                    prefix-icon="el-icon-s-goods"
-                    type="password"></el-input>
+          <el-input
+            v-model="loginForm.password"
+            prefix-icon="el-icon-s-goods"
+            type="password"
+          ></el-input>
         </el-form-item>
         <el-form-item class="btns">
           <!-- @click 点击事件 -->
-          <el-button type="primary"
-                     @click="login">登录</el-button>
-          <el-button type="info"
-                     @click="resetLoginForm">重置</el-button>
+          <el-button type="primary" @click="login">登录</el-button>
+          <el-button type="info" @click="resetLoginForm">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -43,7 +46,7 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       // 登录表单的数据
       loginForm: {
@@ -67,10 +70,10 @@ export default {
   },
   methods: {
     // 点击重置按钮，重置登录表单
-    resetLoginForm () {
+    resetLoginForm() {
       this.$refs.loginFormRef.resetFields()
     },
-    login () {
+    login() {
       // 表单数据的校验，validate 通过回调接收一个 bool 类型的结果
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
@@ -90,59 +93,59 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  .login_container {
-    // 设置背景颜色
-    background-color: #2b4b6b;
-    // 设置对象高度
-    height: 100%;
-  }
-  .login_box {
-    width: 450px;
-    height: 300px;
-    background-color: #fff;
-    // 边框 圆角
-    border-radius: 20px;
-    // 设置为可移动
-    position: absolute;
-    // 左边距
-    left: 50%;
-    // 上边距
-    top: 50%;
-    transform: translate(-50%, -50%);
+.login_container {
+  // 设置背景颜色
+  background-color: #2b4b6b;
+  // 设置对象高度
+  height: 100%;
+}
+.login_box {
+  width: 450px;
+  height: 300px;
+  background-color: #fff;
+  // 边框 圆角
+  border-radius: 20px;
+  // 设置为可移动
+  position: absolute;
+  // 左边距
+  left: 50%;
+  // 上边距
+  top: 50%;
+  transform: translate(-50%, -50%);
 
-    .avatar_box {
-      height: 130px;
-      width: 130px;
-      border: 1px solid #eee;
-      // 画圆
+  .avatar_box {
+    height: 130px;
+    width: 130px;
+    border: 1px solid #eee;
+    // 画圆
+    border-radius: 50%;
+    // 设置内边框
+    padding: 10px;
+    // 设置阴影效果
+    box-shadow: 0 0 10px #ddd;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    img {
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
-      // 设置内边框
-      padding: 10px;
-      // 设置阴影效果
-      box-shadow: 0 0 10px #ddd;
-      position: absolute;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #fff;
-      img {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        background-color: #eee;
-      }
+      background-color: #eee;
     }
   }
-  .btns {
-    // 设置按钮布局，右下角放置
-    display: flex;
-    justify-content: flex-end;
-  }
-  .login_form {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: 0 20px;
-    // 设置不超过外部 box
-    box-sizing: border-box;
-  }
+}
+.btns {
+  // 设置按钮布局，右下角放置
+  display: flex;
+  justify-content: flex-end;
+}
+.login_form {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 0 20px;
+  // 设置不超过外部 box
+  box-sizing: border-box;
+}
 </style>
