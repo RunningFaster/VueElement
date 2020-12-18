@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # vue_shop
 
 ## Project setup
@@ -22,3 +23,7 @@ yarn lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+=======
+# VueElement
+vue+element框架管理系统
+>>>>>>> main
