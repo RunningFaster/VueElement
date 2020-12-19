@@ -2,16 +2,28 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../components/Login.vue'
 import Home from '../components/Home.vue'
+import Welcome from '../components/Welcome.vue'
+import Users from '../components/user/Users.vue'
 
 Vue.use(VueRouter)
 
 const router = new VueRouter({
   routes: [
     // 重定向路由信息，将路由指向对应的地址
-    { path: '/', redirect: '/login' },
+    { path: '/', redirect: '/home' },
     // 设置路由对应的 组件
     { path: '/login', component: Login },
-    { path: '/home', component: Home }
+    {
+      // 家目录，并设置默认的跳转的页面
+      path: '/home',
+      component: Home,
+      redirect: '/welcome',
+      // 子页面
+      children: [
+        { path: '/welcome', component: Welcome },
+        { path: '/users', component: Users }
+      ]
+    }
   ]
 })
 
