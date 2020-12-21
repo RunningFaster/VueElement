@@ -88,17 +88,24 @@
     <!-- 分配权限的对话框 -->
     <el-dialog title="分配权限"
                :visible.sync="setRightDialogVisible"
-               width="50%">
+               width="50%"
+               @close="setRightDialogClosed">
       <!-- 树型控件 -->
       <!-- 通过 props 绑定树形控件的属性 -->
       <!-- 通过 node-key 设置当前行的唯一标识信息 -->
       <!-- default-checked-keys 当前数据中默认的选择数据 -->
-      <el-tree :data="rightsList" :props="treeProps" show-checkbox node-key="id" default-expand-all :default-checked-keys="defKeys"></el-tree>
+      <el-tree :data="rightsList"
+               :props="treeProps"
+               show-checkbox
+               node-key="id"
+               default-expand-all
+               :default-checked-keys="defKeys"
+               ref="treeRef"></el-tree>
       <span slot="footer"
             class="dialog-footer">
         <el-button @click="setRightDialogVisible = false">取 消</el-button>
         <el-button type="primary"
-                   @click="dialogVisible = false">确 定</el-button>
+                   @click="allowRights">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -124,7 +131,9 @@ export default {
         children: 'children'
       },
       // 默认选择的节点的key值
-      defKeys: []
+      defKeys: [],
+      // 当前对话框的角色的id
+      roleId: ''
     }
   },
   methods: {
@@ -151,6 +160,7 @@ export default {
     },
     // 展示分配权限的对话框
     async showSetRightDialog (role) {
+      this.roleId = role.id
       // 获取所有权限列表
       const { data: res } = await this.$http.get('rights/tree')
       if (res.meta.status !== 200) return this.$message.error(res.meta.message)
@@ -162,11 +172,26 @@ export default {
       this.setRightDialogVisible = true
     },
     // 通过递归的方式，获取角色下的三级权限的id，并保存到 default 对象中
-    getLeafKeys(node, arr) {
-      if (!node.children) {
-        return arr.push(node.id)
-      }
+    getLeafKeys (node, arr) {
+      if (!node.children) return arr.push(node.id)
       node.children.forEach(item => this.getLeafKeys(item, arr))
+    },
+    // 设置关闭对话框时清空 权限列表
+    setRightDialogClosed () {
+      this.defKeys = []
+    },
+    // 分配权限
+    async allowRights() {
+      const keys = [
+        ...this.$refs.treeRef.getCheckedKeys(),
+        ...this.$refs.treeRef.getHalfCheckedKeys()
+      ]
+      const idStr = keys.join(',')
+      const { data: res } = await this.$http.post(`roles/${this.roleId}/rights`, { rids: idStr })
+      if (res.meta.status !== 200) return this.$message.error(res.meta.message)
+      this.$message.success('分配权限成功')
+      this.getRolesList()
+      this.setRightDialogVisible = false
     }
   }
 }
