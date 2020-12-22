@@ -1,27 +1,33 @@
 /* 全剧样式 */
-html, body, #app{
+html,
+body,
+#app {
   height: 100%;
   margin: 0;
   padding: 0;
-  min-width: 1366px;
+  /* min-width: 1366px; */
 }
 
 /* 设置全局样式 */
-.el-breadcrumb{
+.el-breadcrumb {
   margin-bottom: 15px;
-  font-size: 12px
+  font-size: 12px;
 }
 
 /* !important 设置当前样式的权重最高 */
-.el-card{
+.el-card {
   box-shadow: 0 1px 1px rgb(0, 0, 0, 0.15) !important;
 }
 
-.el-table{
+.el-table {
   margin-top: 15px;
   font-size: 13px;
 }
 
-.el-pagination{
+.el-pagination {
+  margin-top: 15px;
+}
+
+.zk-table {
   margin-top: 15px;
 }

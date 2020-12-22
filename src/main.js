@@ -6,9 +6,11 @@ import router from './router'
 import './plugins/element.js'
 // 导入全局样式表
 import './assets/css/global.css'
-
+// 导入第三方包，表格树形结构
+import TreeTable from 'vue-table-with-tree-grid'
 // 导入axios包
 import axios from 'axios'
+
 // 配置请求的根路径
 axios.defaults.baseURL = 'https://www.liulongbin.top:8888/api/private/v1/'
 // axios 拦截器，作用是在每次请求时修改 请求信息，包括请求头，等信息
@@ -27,7 +29,7 @@ axios.interceptors.request.use(config => {
 //   return Promise.reject(error)
 // })
 Vue.prototype.$http = axios
-
+Vue.component('tree-table', TreeTable)
 Vue.config.productionTip = false
 
 new Vue({
