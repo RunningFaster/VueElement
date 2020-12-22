@@ -185,7 +185,8 @@
     <!-- 用户绑定角色对话框 -->
     <el-dialog title="分配角色"
                :visible.sync="setRoleDialog"
-               width="50%" @close="setRoleDialogClosed">
+               width="50%"
+               @close="setRoleDialogClosed">
       <div>
         <p>当前的用户：{{ userInfo.username }}</p>
         <p>当前的角色：{{ userInfo.role_name }}</p>
@@ -382,7 +383,7 @@ export default {
       this.setRoleDialog = true
     },
     // 点击按钮 分配角色
-    async saveRoleInfo() {
+    async saveRoleInfo () {
       if (!this.selectRoleId) return this.$message.error('请选择要分配的角色！')
       console.log(this.selectRoleId)
       const { data: res } = await this.$http.put(`users/${this.userInfo.id}/role`, { rid: this.selectRoleId })
@@ -392,7 +393,7 @@ export default {
       this.setRoleDialog = false
     },
     // 监听分配角色对话框的关闭事件
-    setRoleDialogClosed() {
+    setRoleDialogClosed () {
       this.selectedRoleId = ''
       this.selectRoleId = ''
     }

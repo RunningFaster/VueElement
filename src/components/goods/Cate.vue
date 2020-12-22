@@ -77,6 +77,7 @@
       title="添加分类"
       :visible.sync="addCateDialogvisiable"
       width="50%"
+      @close="addCateDialogClosed"
     >
       <el-form
         ref="addCateFormRef"
@@ -84,13 +85,22 @@
         :rules="addCateFormRules"
         label-width="80px"
       >
-        <el-form-item label="分类名称">
+        <el-form-item label="分类名称：" prop="cat_name">
           <el-input v-model="addCateForm.cat_name"></el-input>
+        </el-form-item>
+        <el-form-item label="父级分类：">
+          <!-- options 用来指定下啦框的数据 -->
+            <el-cascader
+    v-model="selectedKeys"
+    :options="parentCateList"
+    :props="cascaderProps"
+    @change="parentCateChanged" :clearable="true">
+    </el-cascader>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addCateDialogvisiable = false">取 消</el-button>
-        <el-button type="primary" @click="addCateDialogvisiable = false"
+        <el-button type="primary" @click="addCate"
           >确 定</el-button
         >
       </span>
@@ -141,7 +151,8 @@ export default {
       addCateDialogvisiable: false,
       //
       addCateForm: {
-        cat_pid: 0, // 父类id， 如果是顶级，则传递 '0'
+        // 父类id， 如果是顶级，则传递 '0'
+        cat_pid: 0,
         cat_name: '',
         // 分类等级，默认要添加的是 1级分类
         cat_level: 0
@@ -151,7 +162,19 @@ export default {
         cat_name: [
           { required: true, message: '请输入登录名称', trigger: 'blur' }
         ]
-      }
+      },
+      // 父级分类的列表
+      parentCateList: [],
+      // 指定级联选择器的配置对象
+      cascaderProps: {
+        expandTrigger: 'hover',
+        value: 'cat_id',
+        label: 'cat_name',
+        children: 'children',
+        checkStrictly: true
+      },
+      // 选中的级联选择器选择的结果
+      selectedKeys: []
     }
   },
   created() {
@@ -179,10 +202,57 @@ export default {
     },
     // 点击显示对话框
     showAddCateDialog() {
+      // 先获取父级分类的数据，再展示对话框
+      this.getParentCateList()
       this.addCateDialogvisiable = true
+    },
+    // 获取父级
+    async getParentCateList() {
+      const { data: res } = await this.$http.get('categories', { params: { type: 2 } })
+      if (res.meta.status !== 200) return this.$message.error(res.meta.message)
+      this.parentCateList = res.data
+    },
+    // 选择项发生变化触发这个函数
+    parentCateChanged() {
+      console.log(this.selectedKeys)
+      // 如果 selectKeys 数组中的 length 大于0，则表示有选中
+      if (this.selectedKeys.length > 0) {
+        this.addCateForm.cat_pid = this.selectedKeys[this.selectedKeys.length - 1]
+        // 为当前分类的等级赋值
+        this.addCateForm.cat_level = this.selectedKeys.length
+      } else {
+        this.addCateForm.cat_pid = 0
+        // 为当前分类的等级赋值
+        this.addCateForm.cat_level = 0
+      }
+      // 如果 数组 length 长度为 1，则表示2级 ，如果长度为 2，则表示3级
+    },
+    // 新增分类
+    addCate() {
+      console.log(this.addCateForm)
+      this.$refs.addCateFormRef.validate(async valid => {
+        if (!valid) return this.$message.error('校验失败')
+        const { data: res } = await this.$http.post('categories', this.addCateForm)
+        if (res.meta.status !== 201) return this.$message.error(res.meta.message)
+        this.$message.success('添加成功！')
+        this.addCateDialogClosed()
+        this.getCategoriesList()
+        this.addCateDialogvisiable = false
+      })
+    },
+    // 关闭窗口
+    addCateDialogClosed() {
+      this.$refs.addCateFormRef.resetFields()
+      this.selectedKeys = []
+      this.addCateForm.cat_level = 0
+      this.addCateForm.cat_pid = 0
     }
   }
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.el-cascader{
+  width: 100%;
+}
+</style>
