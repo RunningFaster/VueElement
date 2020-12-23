@@ -12,97 +12,49 @@
       <el-row>
         <!-- 添加分类按钮 -->
         <el-col>
-          <el-button type="primary" @click="showAddCateDialog()"
-            >添加分类</el-button
-          >
+          <el-button type="primary" @click="showAddCateDialog()">添加分类</el-button>
         </el-col>
       </el-row>
       <!-- 表格 -->
-      <tree-table
-        :data="catelist"
-        :columns="columns"
-        :selection-type="false"
-        :expand-type="false"
-        show-index
-        index-text="#"
-        :stripe="true"
-        :border="true"
-      >
+      <tree-table :data="catelist" :columns="columns" :selection-type="false" :expand-type="false" show-index index-text="#" :stripe="true" :border="true">
         <!-- 是否有效 -->
         <template slot="isok" slot-scope="scope">
-          <i
-            class="el-icon-success"
-            v-if="scope.row.cat_deleted === false"
-            style="color: lightgreen"
-          ></i>
+          <i class="el-icon-success" v-if="scope.row.cat_deleted === false" style="color: lightgreen"></i>
           <i class="el-icon-error" v-else style="color: red"></i>
         </template>
 
         <!-- 排序 -->
         <template slot="order" slot-scope="scope">
           <el-tag size="mini" v-if="scope.row.cat_level === 0">一级</el-tag>
-          <el-tag
-            type="success"
-            size="mini"
-            v-else-if="scope.row.cat_level === 1"
-            >二级</el-tag
-          >
+          <el-tag type="success" size="mini" v-else-if="scope.row.cat_level === 1">二级</el-tag>
           <el-tag type="danger" size="mini" v-else>三级</el-tag>
         </template>
         <!-- 操作 -->
         <template slot="opt">
-          <el-button type="primary" icon="el-icon-edit" size="mini"
-            >编辑</el-button
-          >
-          <el-button type="danger" icon="el-icon-delete" size="mini"
-            >删除</el-button
-          >
+          <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
+          <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
         </template>
       </tree-table>
       <!-- 分页区域 -->
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="queryInfo.pagenum"
-        :page-sizes="[1, 2, 5, 10]"
-        :page-size="queryInfo.pagesize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      >
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="queryInfo.pagenum" :page-sizes="[1, 2, 5, 10]" :page-size="queryInfo.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </el-card>
 
     <!-- 添加分类的对话框 -->
-    <el-dialog
-      title="添加分类"
-      :visible.sync="addCateDialogvisiable"
-      width="50%"
-      @close="addCateDialogClosed"
-    >
-      <el-form
-        ref="addCateFormRef"
-        :model="addCateForm"
-        :rules="addCateFormRules"
-        label-width="80px"
-      >
+    <el-dialog title="添加分类" :visible.sync="addCateDialogvisiable" width="50%" @close="addCateDialogClosed">
+      <el-form ref="addCateFormRef" :model="addCateForm" :rules="addCateFormRules" label-width="80px">
         <el-form-item label="分类名称：" prop="cat_name">
           <el-input v-model="addCateForm.cat_name"></el-input>
         </el-form-item>
         <el-form-item label="父级分类：">
           <!-- options 用来指定下啦框的数据 -->
-            <el-cascader
-    v-model="selectedKeys"
-    :options="parentCateList"
-    :props="cascaderProps"
-    @change="parentCateChanged" :clearable="true">
-    </el-cascader>
+          <el-cascader v-model="selectedKeys" :options="parentCateList" :props="cascaderProps" @change="parentCateChanged" :clearable="true">
+          </el-cascader>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addCateDialogvisiable = false">取 消</el-button>
-        <el-button type="primary" @click="addCate"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="addCate">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -110,7 +62,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       // 查询过滤条件
       queryInfo: {
@@ -177,11 +129,11 @@ export default {
       selectedKeys: []
     }
   },
-  created() {
+  created () {
     this.getCategoriesList()
   },
   methods: {
-    async getCategoriesList() {
+    async getCategoriesList () {
       const { data: res } = await this.$http.get('categories', {
         params: this.queryInfo
       })
@@ -191,33 +143,37 @@ export default {
       this.total = res.data.total
     },
     // 分页处理函数
-    handleSizeChange(newSize) {
+    handleSizeChange (newSize) {
       this.queryInfo.pagesize = newSize
       this.getCategoriesList()
     },
     // 监听 pagenum 的改变
-    handleCurrentChange(newPage) {
+    handleCurrentChange (newPage) {
       this.queryInfo.pagenum = newPage
       this.getCategoriesList()
     },
     // 点击显示对话框
-    showAddCateDialog() {
+    showAddCateDialog () {
       // 先获取父级分类的数据，再展示对话框
       this.getParentCateList()
       this.addCateDialogvisiable = true
     },
     // 获取父级
-    async getParentCateList() {
-      const { data: res } = await this.$http.get('categories', { params: { type: 2 } })
+    async getParentCateList () {
+      const { data: res } = await this.$http.get('categories', {
+        params: { type: 2 }
+      })
       if (res.meta.status !== 200) return this.$message.error(res.meta.message)
       this.parentCateList = res.data
     },
     // 选择项发生变化触发这个函数
-    parentCateChanged() {
+    parentCateChanged () {
       console.log(this.selectedKeys)
       // 如果 selectKeys 数组中的 length 大于0，则表示有选中
       if (this.selectedKeys.length > 0) {
-        this.addCateForm.cat_pid = this.selectedKeys[this.selectedKeys.length - 1]
+        this.addCateForm.cat_pid = this.selectedKeys[
+          this.selectedKeys.length - 1
+        ]
         // 为当前分类的等级赋值
         this.addCateForm.cat_level = this.selectedKeys.length
       } else {
@@ -228,12 +184,15 @@ export default {
       // 如果 数组 length 长度为 1，则表示2级 ，如果长度为 2，则表示3级
     },
     // 新增分类
-    addCate() {
+    addCate () {
       console.log(this.addCateForm)
       this.$refs.addCateFormRef.validate(async valid => {
         if (!valid) return this.$message.error('校验失败')
-        const { data: res } = await this.$http.post('categories', this.addCateForm)
-        if (res.meta.status !== 201) return this.$message.error(res.meta.message)
+        const { data: res } = await this.$http.post(
+          'categories',
+          this.addCateForm
+        )
+        if (res.meta.status !== 201) { return this.$message.error(res.meta.message) }
         this.$message.success('添加成功！')
         this.addCateDialogClosed()
         this.getCategoriesList()
@@ -241,7 +200,7 @@ export default {
       })
     },
     // 关闭窗口
-    addCateDialogClosed() {
+    addCateDialogClosed () {
       this.$refs.addCateFormRef.resetFields()
       this.selectedKeys = []
       this.addCateForm.cat_level = 0
@@ -252,7 +211,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.el-cascader{
+.el-cascader {
   width: 100%;
 }
 </style>
